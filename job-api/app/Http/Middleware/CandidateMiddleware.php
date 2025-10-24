@@ -1,5 +1,4 @@
 <?php
-// app/Http/Middleware/CandidateMiddleware.php
 
 namespace App\Http\Middleware;
 
@@ -10,7 +9,13 @@ class CandidateMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->user() || !$request->user()->isCandidate()) {
+        if (!$request->user()) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        if ($request->user()->type !== 'candidate') {
             return response()->json([
                 'message' => 'Unauthorized. Candidate access required.'
             ], 403);

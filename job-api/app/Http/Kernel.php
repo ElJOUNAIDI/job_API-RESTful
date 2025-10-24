@@ -39,7 +39,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // ✅ Active Sanctum pour les requêtes API authentifiées
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -66,6 +65,9 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-
+        // ✅ AJOUTEZ CES LIGNES - Middlewares personnalisés
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'employer' => \App\Http\Middleware\EmployerMiddleware::class,
+        'candidate' => \App\Http\Middleware\CandidateMiddleware::class,
     ];
 }

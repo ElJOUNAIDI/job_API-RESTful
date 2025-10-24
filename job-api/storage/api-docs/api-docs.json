@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Job Platform API",
-        "description": "API pour la plateforme de recherche d'emploi",
+        "title": "API Plateforme Emploi",
+        "description": "Documentation Swagger des endpoints Admin pour la gestion des utilisateurs, offres et candidatures",
         "version": "1.0.0"
     },
     "servers": [
@@ -12,6 +12,550 @@
         }
     ],
     "paths": {
+        "/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Lister tous les utilisateurs (Admin seulement)",
+                "operationId": "7a629ec3ab4a321032bfa425c844d09d",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Numéro de page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des utilisateurs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}/role": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Modifier le rôle d'un utilisateur (Admin seulement)",
+                "operationId": "64fbf4945673fb65321ba32e430bb957",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rôle mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    },
+                    "404": {
+                        "description": "Utilisateur non trouvé"
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/jobs": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Lister toutes les offres d'emploi (Admin seulement)",
+                "operationId": "b1d00a9ba9f6469e3735190dea65796f",
+                "responses": {
+                    "200": {
+                        "description": "Liste de toutes les offres",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Job"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/applications": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Lister toutes les candidatures (Admin seulement)",
+                "operationId": "1645dc31c0de72f14a79a32b57a867f3",
+                "responses": {
+                    "200": {
+                        "description": "Liste des candidatures",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Application"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/statistics": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Récupérer les statistiques globales (Admin seulement)",
+                "operationId": "9e3cf48baad7ece8330e837ac83b494b",
+                "responses": {
+                    "200": {
+                        "description": "Statistiques",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Statistics"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/jobs/{id}": {
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Supprimer une offre d'emploi (Admin seulement)",
+                "operationId": "dce2d46653d12554027d4fd0cfea2719",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Offre supprimée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Job deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Offre non trouvée"
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}": {
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Supprimer un utilisateur (Admin seulement)",
+                "operationId": "c3d89b5334aaae1703053279305a83be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur supprimé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Utilisateur non trouvé"
+                    },
+                    "403": {
+                        "description": "Accès refusé - Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/candidate/applications": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Lister les candidatures du candidat connecté",
+                "operationId": "aa73ca3f50b108d97caf221d009f8efc",
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des candidatures du candidat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Application"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé - Candidat requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs/{id}/apply": {
+            "post": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Postuler à une offre d'emploi",
+                "operationId": "810171efa09900eb416b44ee81c6f90d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du job à postuler",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplicationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Candidature soumise",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Offre non trouvée"
+                    },
+                    "422": {
+                        "description": "Déjà postulé ou erreur de validation"
+                    },
+                    "403": {
+                        "description": "Accès refusé - Candidat requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/candidate/applications/{id}": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Afficher les détails d'une candidature spécifique du candidat",
+                "operationId": "d27c4d6d9388e0a78abec8bb2f69b99a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la candidature",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la candidature",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Candidature non trouvée"
+                    },
+                    "403": {
+                        "description": "Accès refusé - Candidat requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/employer/applications": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Lister toutes les candidatures reçues par les offres de l'employeur connecté",
+                "operationId": "107fcdddbae858d17fd4862a0ca26518",
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des candidatures reçues",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Application"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé - Employeur requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/applications/{id}/status": {
+            "put": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Mettre à jour le statut d'une candidature (Employeur uniquement)",
+                "operationId": "9076be571c7443f1245225ded16b6a83",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la candidature",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplicationStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Statut mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "404": {
+                        "description": "Candidature non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/register": {
             "post": {
                 "tags": [
@@ -232,10 +776,537 @@
                     }
                 ]
             }
+        },
+        "/favorites": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Lister les offres favorites du candidat connecté",
+                "operationId": "de458f646b8ab1d9eb829bbd6a218808",
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des offres favorites",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Favorite"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs/{id}/favorite": {
+            "post": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Ajouter ou retirer une offre d'emploi des favoris",
+                "operationId": "cb48051500480d6878946624694bc472",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'offre d'emploi",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statut du favori modifié",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Job added to favorites"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Offre d'emploi non trouvée"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs/{id}/favorite/check": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Vérifier si une offre est dans les favoris de l'utilisateur",
+                "operationId": "728d64e17285ff750505c020242b4b7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'offre d'emploi",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 8
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultat de la vérification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "is_favorite": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Lister toutes les offres d'emploi",
+                "operationId": "61095dd3fdb7b25e7daa0084b396ca6e",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Recherche",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des offres",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Job"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Créer une nouvelle offre",
+                "operationId": "724b21b194916208376d71437be61a8b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Créé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Job"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs/{id}": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Afficher une offre d'emploi",
+                "operationId": "40e7eaa66d57253caa249e6f6fc06763",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du job",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Job"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Mettre à jour une offre",
+                "operationId": "73ddd3048c72f5dbb787a4733069f5d1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Job"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Supprimer une offre",
+                "operationId": "7d6ee44631cf0dc1175069d51532c9b8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supprimé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Job deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/employer/jobs": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Lister les offres de l'employeur connecté",
+                "operationId": "1b4c145d6c369d2bae47a7ff51ce3058",
+                "responses": {
+                    "200": {
+                        "description": "Liste des offres",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Job"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "Statistics": {
+                "properties": {
+                    "total_users": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "total_employers": {
+                        "type": "integer",
+                        "example": 45
+                    },
+                    "total_candidates": {
+                        "type": "integer",
+                        "example": 105
+                    },
+                    "total_jobs": {
+                        "type": "integer",
+                        "example": 89
+                    },
+                    "active_jobs": {
+                        "type": "integer",
+                        "example": 76
+                    },
+                    "total_applications": {
+                        "type": "integer",
+                        "example": 234
+                    }
+                },
+                "type": "object"
+            },
+            "RoleUpdateRequest": {
+                "required": [
+                    "role"
+                ],
+                "properties": {
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "admin",
+                            "employer",
+                            "candidate"
+                        ],
+                        "example": "employer"
+                    }
+                },
+                "type": "object"
+            },
+            "Application": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "job_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "candidate_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "cover_letter": {
+                        "type": "string",
+                        "example": "Lettre de motivation..."
+                    },
+                    "resume": {
+                        "type": "string",
+                        "example": "cv.pdf"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "reviewed",
+                            "accepted",
+                            "rejected"
+                        ],
+                        "example": "pending"
+                    },
+                    "feedback": {
+                        "type": "string",
+                        "example": "Feedback de l'employeur"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "job": {
+                        "$ref": "#/components/schemas/Job"
+                    },
+                    "candidate": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "type": "object"
+            },
+            "ApplicationRequest": {
+                "required": [
+                    "cover_letter"
+                ],
+                "properties": {
+                    "cover_letter": {
+                        "type": "string",
+                        "maxLength": 2000,
+                        "minLength": 50,
+                        "example": "Je suis très intéressé par cette opportunité..."
+                    },
+                    "resume": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "mon_cv.pdf"
+                    }
+                },
+                "type": "object"
+            },
+            "ApplicationStatusRequest": {
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "reviewed",
+                            "accepted",
+                            "rejected"
+                        ],
+                        "example": "reviewed"
+                    },
+                    "feedback": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "example": "Votre profil a été retenu pour un entretien"
+                    }
+                },
+                "type": "object"
+            },
             "User": {
                 "title": "User model",
                 "required": [
@@ -281,6 +1352,166 @@
                     }
                 },
                 "type": "object"
+            },
+            "Favorite": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "job_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "job": {
+                        "$ref": "#/components/schemas/Job"
+                    }
+                },
+                "type": "object"
+            },
+            "Job": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "employer_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Développeur Laravel Senior"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Description du poste..."
+                    },
+                    "company": {
+                        "type": "string",
+                        "example": "Tech Solutions"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Paris, France"
+                    },
+                    "salary": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 55000
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "full_time",
+                            "part_time",
+                            "contract",
+                            "internship"
+                        ],
+                        "example": "full_time"
+                    },
+                    "category": {
+                        "type": "string",
+                        "enum": [
+                            "technology",
+                            "healthcare",
+                            "education",
+                            "finance",
+                            "other"
+                        ],
+                        "example": "technology"
+                    },
+                    "application_deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-12-31"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "JobRequest": {
+                "required": [
+                    "title",
+                    "description",
+                    "company",
+                    "location",
+                    "type",
+                    "category"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Développeur Laravel"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Description détaillée du poste"
+                    },
+                    "company": {
+                        "type": "string",
+                        "example": "Tech Company"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Paris, France"
+                    },
+                    "salary": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50000
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "full_time",
+                            "part_time",
+                            "contract",
+                            "internship"
+                        ],
+                        "example": "full_time"
+                    },
+                    "category": {
+                        "type": "string",
+                        "enum": [
+                            "technology",
+                            "healthcare",
+                            "education",
+                            "finance",
+                            "other"
+                        ],
+                        "example": "technology"
+                    },
+                    "application_deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-12-31"
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -293,8 +1524,24 @@
     },
     "tags": [
         {
+            "name": "Admin",
+            "description": "Endpoints réservés à l'administrateur pour la gestion des utilisateurs, offres et candidatures"
+        },
+        {
+            "name": "Applications",
+            "description": "Applications"
+        },
+        {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Favorites",
+            "description": "Favorites"
+        },
+        {
+            "name": "Jobs",
+            "description": "Jobs"
         }
     ]
 }

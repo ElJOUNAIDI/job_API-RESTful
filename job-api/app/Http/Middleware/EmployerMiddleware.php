@@ -1,5 +1,4 @@
 <?php
-// app/Http/Middleware/EmployerMiddleware.php
 
 namespace App\Http\Middleware;
 
@@ -10,7 +9,15 @@ class EmployerMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->user() || !$request->user()->isEmployer()) {
+        // Vérifier que l'utilisateur est authentifié
+        if (!$request->user()) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        // Vérifier que l'utilisateur est un employeur
+        if ($request->user()->type !== 'employer') {
             return response()->json([
                 'message' => 'Unauthorized. Employer access required.'
             ], 403);
